@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FakeStore.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241213174724_Initial")]
+    [Migration("20241213175340_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -57,6 +57,15 @@ namespace FakeStore.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Stores");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("07571a0d-96ed-4599-af3c-59db12d74311"),
+                            Address = "123 Main St",
+                            Name = "My Store",
+                            OrderCancelationLimitInMinutes = 60
+                        });
                 });
 #pragma warning restore 612, 618
         }

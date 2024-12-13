@@ -6,6 +6,7 @@
 # dotenv files
 .env
 .vscode
+*.db
 
 # User-specific files
 *.rsuser

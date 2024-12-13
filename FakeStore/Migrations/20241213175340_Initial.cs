@@ -42,6 +42,18 @@ namespace FakeStore.Migrations
                     table.PrimaryKey("PK_Stores", x => x.Id);
                 }
             );
+
+            migrationBuilder.InsertData(
+                table: "Stores",
+                columns: new[] { "Id", "Address", "Name", "OrderCancelationLimitInMinutes" },
+                values: new object[]
+                {
+                    new Guid("07571a0d-96ed-4599-af3c-59db12d74311"),
+                    "123 Main St",
+                    "My Store",
+                    60,
+                }
+            );
         }
 
         /// <inheritdoc />
