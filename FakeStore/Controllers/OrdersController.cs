@@ -1,11 +1,28 @@
+using FakeStore.Data;
+using FakeStore.Model.Domain;
+using FakeStore.Model.Enums;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FakeStore.Controllers
+namespace FakeStore.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class OrdersController(AppDbContext dbContext) : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class OrdersController : ControllerBase
+    public async Task<IActionResult> CancelOrder(Guid orderId)
     {
-        // TODO: lembrar de fazer verificação do jeito errado pra corrigir na hora
+        if (await dbContext.Orders.FindAsync(orderId) is not Order order)
+            return NotFound();
+
+        var now = DateTime.UtcNow;
+
+        if (now.Subtract(order.CreatedAt).TotalMinutes < order.Store.OrderCancelationLimitInMinutes)
+        {
+            order.Status = OrderStatus.Cancelled;
+            await dbContext.SaveChangesAsync();
+            return Ok();
+        }
+
+        return BadRequest(new { error = "Order is too new to be cancelled" });
     }
 }
