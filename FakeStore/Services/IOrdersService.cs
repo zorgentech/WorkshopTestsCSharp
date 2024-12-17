@@ -10,5 +10,5 @@ public interface IOrdersService
 
     Task UpdateOrderAsync(Order order);
 
-    Task CancelOrderAsync(Order order);
+    Task<string?> CancelOrderAsync(Order order);
 }

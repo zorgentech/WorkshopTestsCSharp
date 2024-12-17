@@ -15,8 +15,8 @@ public class OrdersService(IOrdersRepository ordersRepository) : IOrdersService
     {
         var now = DateTime.UtcNow;
 
-        return now.Subtract(order.CreatedAt).TotalMinutes
-            > order.Store.OrderCancelationLimitInMinutes;
+        return Convert.ToInt64(now.Subtract(order.CreatedAt).TotalMinutes)
+            <= -order.Store.OrderCancelationLimitInMinutes;
     }
 
     public async Task UpdateOrderAsync(Order order)
@@ -24,9 +24,12 @@ public class OrdersService(IOrdersRepository ordersRepository) : IOrdersService
         await ordersRepository.UpdateOrderAsync(order);
     }
 
-    public async Task CancelOrderAsync(Order order)
+    public async Task<string?> CancelOrderAsync(Order order)
     {
+        if (IsOrderExpired(order))
+            return "Order is too old to be cancelled";
         order.Status = OrderStatus.Cancelled;
         await UpdateOrderAsync(order);
+        return null;
     }
 }

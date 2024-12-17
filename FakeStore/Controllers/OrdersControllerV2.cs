@@ -13,10 +13,9 @@ public class OrdersControllerV2(IOrdersService service) : ControllerBase
         if (await service.GetOrderByIdAsync(orderId, includeStore: true) is not Order order)
             return NotFound();
 
-        if (service.IsOrderExpired(order))
-            return BadRequest(new { error = "Order is too new to be cancelled" });
+        if (await service.CancelOrderAsync(order) is string error)
+            return BadRequest(new { error });
 
-        await service.CancelOrderAsync(order);
         return Ok();
     }
 }
