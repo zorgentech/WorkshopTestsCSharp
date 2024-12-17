@@ -15,8 +15,8 @@ public class OrdersService(IOrdersRepository ordersRepository) : IOrdersService
     {
         var now = DateTime.UtcNow;
 
-        return Convert.ToInt64(now.Subtract(order.CreatedAt).TotalMinutes)
-            <= -order.Store.OrderCancelationLimitInMinutes;
+        return Convert.ToInt64(order.CreatedAt.Subtract(now).TotalMinutes)
+            >= order.Store.OrderCancelationLimitInMinutes;
     }
 
     public async Task UpdateOrderAsync(Order order)
