@@ -1,7 +1,6 @@
 using AutoBogus;
 using FakeStore.Model.Domain;
 using FakeStore.Model.Enums;
-using FakeStore.Repositories;
 using FakeStore.Services;
 using FakeStoreXunitTests.Extensions;
 using FakeStoreXunitTests.Fixtures;
