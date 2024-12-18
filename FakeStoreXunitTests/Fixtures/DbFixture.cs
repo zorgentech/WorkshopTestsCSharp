@@ -8,36 +8,32 @@ namespace FakeStoreXunitTests.Fixtures;
 public class DbFixture
 {
     public readonly CustomWebApplicationFactory<Program> Factory;
-    private readonly IServiceScope Scope;
-    private readonly AppDbContext DbContext;
 
     public DbFixture()
     {
         Factory = new CustomWebApplicationFactory<Program>();
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.GetService<AppDbContext>();
         CreateAndSeedDatabase();
-    }
-
-    private void DeleteDatabase()
-    {
-        DbContext.Database.EnsureDeleted();
     }
 
     private void CreateAndSeedDatabase()
     {
+        using var scope = Factory.Services.CreateScope();
+        var db = scope.GetService<AppDbContext>();
         try
         {
-            DbContext.Database.EnsureDeleted();
+            db.Database.EnsureDeleted();
         }
-        catch { }
-        DbContext.Database.EnsureCreated();
-    }
-
-    public void Dispose()
-    {
-        DeleteDatabase();
-        Factory.Dispose();
-        GC.SuppressFinalize(this);
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+        try
+        {
+            db.Database.EnsureCreated();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
     }
 }

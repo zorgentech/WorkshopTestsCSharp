@@ -111,14 +111,15 @@ public class OrdersServiceTests
         order.CreatedAt = DateTime.UtcNow.AddMinutes(
             order.Store.OrderCancelationLimitInMinutes - 1
         );
-        ordersRepositoryMock
-            .Setup(x => x.UpdateOrderAsync(It.Is<Order>(x => x.Status == OrderStatus.Cancelled)))
-            .Returns(Task.CompletedTask);
+        // ordersRepositoryMock
+        //     .Setup(x => x.UpdateOrderAsync(It.Is<Order>(x => x.Status != OrderStatus.Cancelled)))
+        //     .Returns(Task.CompletedTask);
 
         // Act
         var result = await ordersService.Object.CancelOrderAsync(order);
 
         // Assert
         result.Should().BeNull("no error message should be returned");
+        order.Status.Should().Be(OrderStatus.Cancelled, "order status should be changed");
     }
 }
