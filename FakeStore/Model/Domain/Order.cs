@@ -10,4 +10,7 @@ public class Order
 
     public Guid StoreId { get; set; }
     public Store Store { get; set; }
+    
+    public Guid AttendantId { get; set; }
+    public Attendant? Attendant { get; set; }
 }

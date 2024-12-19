@@ -7,10 +7,16 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 {
     public DbSet<Order> Orders { get; set; }
     public DbSet<Store> Stores { get; set; }
+    public DbSet<Attendant> Attendants { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<Order>()
+        .HasOne(o => o.Attendant)
+        .WithMany(a => a.Orders)
+        .HasForeignKey(o => o.AttendantId);
 
         // seed data, create a Store
         modelBuilder
