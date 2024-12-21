@@ -20,7 +20,7 @@ public class OrdersServiceTests
     }
 
     [Fact]
-    public void IsOrderExpired_ShouldReturnTrue_WhenOrderIsExpired()
+    public void IsOrderExpired_WhenOrderIsExpired_ShouldReturnTrue()
     {
         // Arrange
         var order = AutoFaker.Generate<Order>();
@@ -42,7 +42,7 @@ public class OrdersServiceTests
     }
 
     [Fact]
-    public void IsOrderExpired_ShouldReturnFalse_WhenOrderIsNotExpired()
+    public void IsOrderExpired_WhenOrderIsNotExpired_ShouldReturnFalse()
     {
         // Arrange
         var order = AutoFaker.Generate<Order>();
@@ -64,7 +64,7 @@ public class OrdersServiceTests
     }
 
     [Fact]
-    public void IsOrderExpired_ShouldReturnTrue_WhenOrderIsAtLimit()
+    public void IsOrderExpired_WhenOrderIsAtLimit_ShouldReturnTrue()
     {
         // Arrange
         var order = AutoFaker.Generate<Order>();
@@ -84,7 +84,7 @@ public class OrdersServiceTests
     }
 
     [Fact]
-    public async Task CancelOrder_GivenExpiredOrder_ShouldReturnErrorMessage()
+    public async Task CancelOrder_WhenOrderIsExpired_ShouldReturnErrorMessage()
     {
         // Arrange
         var order = AutoFaker.Generate<Order>();
@@ -103,7 +103,7 @@ public class OrdersServiceTests
     }
 
     [Fact]
-    public async Task CancelOrder_GivenNotExpiredOrder_ShouldReturnNull_And_UpdateOrderStatusToCanceled()
+    public async Task CancelOrder_WhenOrderIsNotExpired_ShouldUpdateOrderStatusToCancelled_AndSaveToRepository()
     {
         // Arrange
         var order = AutoFaker.Generate<Order>();
@@ -111,18 +111,18 @@ public class OrdersServiceTests
         order.CreatedAt = DateTime.UtcNow.AddMinutes(
             order.Store.OrderCancelationLimitInMinutes - 1
         );
-        ordersRepositoryMock
-            .Setup(x => x.UpdateOrderAsync(It.IsAny<Order>()))
-            .Returns(Task.CompletedTask);
 
         // Act
         var result = await ordersService.Object.CancelOrderAsync(order);
 
         // Assert
         ordersRepositoryMock.Verify(
-            x => x.UpdateOrderAsync(It.Is<Order>(x => x.Status == OrderStatus.Cancelled)),
+            x =>
+                x.UpdateOrderAsync(
+                    It.Is<Order>(o => o == order && o.Status == OrderStatus.Cancelled)
+                ),
             Times.Once,
-            "repository should be called with updated status"
+            "repository updated should be called with same order with status cancelled"
         );
         result.Should().BeNull("no error message should be returned");
         order.Status.Should().Be(OrderStatus.Cancelled, "order status should be changed");

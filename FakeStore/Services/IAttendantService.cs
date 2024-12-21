@@ -1,5 +1,6 @@
 ﻿using FakeStore.Model.Domain;
-namespace FakeStore;
+
+namespace FakeStore.Services;
 
 public interface IAttendantService
 {
