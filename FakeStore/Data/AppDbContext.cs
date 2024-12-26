@@ -13,6 +13,13 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     {
         base.OnModelCreating(modelBuilder);
 
+        // many to many
+        modelBuilder
+            .Entity<Store>()
+            .HasMany(o => o.Attendants)
+            .WithMany(a => a.Stores)
+            .UsingEntity<Order>();
+
         // seed data, create a Store
         modelBuilder
             .Entity<Store>()

@@ -9,4 +9,5 @@ public class Store
 
     // Navigation attributes
     public ICollection<Order>? Orders { get; set; }
+    public ICollection<Attendant>? Attendants { get; set; }
 }

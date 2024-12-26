@@ -1,8 +1,8 @@
-using AutoBogus;
 using FakeStore.Model.Domain;
 using FakeStore.Model.Enums;
 using FakeStore.Repositories;
 using FakeStore.Services;
+using FakeStoreXunitTests.Fixtures;
 using FluentAssertions;
 using Moq;
 
@@ -12,6 +12,7 @@ public class OrdersServiceTests
 {
     public Mock<IOrdersRepository> ordersRepositoryMock;
     public Mock<OrdersService> ordersService;
+    public Fakers fakers = new();
 
     public OrdersServiceTests()
     {
@@ -23,7 +24,7 @@ public class OrdersServiceTests
     public void IsOrderExpired_WhenOrderIsExpired_ShouldReturnTrue()
     {
         // Arrange
-        var order = AutoFaker.Generate<Order>();
+        var order = fakers.orderFaker.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
         order.CreatedAt = DateTime.UtcNow.AddMinutes(
             order.Store.OrderCancelationLimitInMinutes + 1
@@ -45,7 +46,7 @@ public class OrdersServiceTests
     public void IsOrderExpired_WhenOrderIsNotExpired_ShouldReturnFalse()
     {
         // Arrange
-        var order = AutoFaker.Generate<Order>();
+        var order = fakers.orderFaker.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
         order.CreatedAt = DateTime.UtcNow.AddMinutes(
             order.Store.OrderCancelationLimitInMinutes - 1
@@ -67,7 +68,7 @@ public class OrdersServiceTests
     public void IsOrderExpired_WhenOrderIsAtLimit_ShouldReturnTrue()
     {
         // Arrange
-        var order = AutoFaker.Generate<Order>();
+        var order = fakers.orderFaker.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
         order.CreatedAt = DateTime.UtcNow.AddMinutes(order.Store.OrderCancelationLimitInMinutes);
 
@@ -87,7 +88,7 @@ public class OrdersServiceTests
     public async Task CancelOrder_WhenOrderIsExpired_ShouldReturnErrorMessage()
     {
         // Arrange
-        var order = AutoFaker.Generate<Order>();
+        var order = fakers.orderFaker.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
         order.CreatedAt = DateTime.UtcNow.AddMinutes(
             order.Store.OrderCancelationLimitInMinutes + 1
@@ -106,7 +107,7 @@ public class OrdersServiceTests
     public async Task CancelOrder_WhenOrderIsNotExpired_ShouldUpdateOrderStatusToCancelled_AndSaveToRepository()
     {
         // Arrange
-        var order = AutoFaker.Generate<Order>();
+        var order = fakers.orderFaker.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
         order.CreatedAt = DateTime.UtcNow.AddMinutes(
             order.Store.OrderCancelationLimitInMinutes - 1

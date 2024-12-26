@@ -7,4 +7,5 @@ public class Attendant
 
     // navigation attributes
     public ICollection<Order>? Orders { get; set; }
+    public ICollection<Store>? Stores { get; set; }
 }

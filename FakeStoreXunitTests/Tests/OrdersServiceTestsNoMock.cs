@@ -1,4 +1,3 @@
-using AutoBogus;
 using FakeStore.Model.Domain;
 using FakeStore.Model.Enums;
 using FakeStore.Services;
@@ -12,11 +11,11 @@ namespace FakeStoreXunitTests.Tests;
 public class OrdersServiceTestsNoMock : TestBase
 {
     public IOrdersService ordersService;
+    public Fakers fakers = new();
 
     public OrdersServiceTestsNoMock(DbFixture dbFixture)
         : base(dbFixture)
     {
-        // eu estava usando a classe em vez da interface, mostrar como se não registrar realmente não funciona
         ordersService = Scope.GetService<IOrdersService>();
     }
 
@@ -24,7 +23,8 @@ public class OrdersServiceTestsNoMock : TestBase
     public void IsOrderExpired_ShouldReturnTrue_WhenOrderIsExpired()
     {
         // Arrange
-        var order = AutoFaker.Generate<Order>();
+
+        var order = fakers.orderFaker.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
         order.CreatedAt = DateTime.UtcNow.AddMinutes(
             order.Store.OrderCancelationLimitInMinutes + 1
@@ -46,7 +46,7 @@ public class OrdersServiceTestsNoMock : TestBase
     public void IsOrderExpired_ShouldReturnFalse_WhenOrderIsNotExpired()
     {
         // Arrange
-        var order = AutoFaker.Generate<Order>();
+        var order = fakers.orderFaker.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
         order.CreatedAt = DateTime.UtcNow.AddMinutes(
             order.Store.OrderCancelationLimitInMinutes - 1
@@ -68,7 +68,7 @@ public class OrdersServiceTestsNoMock : TestBase
     public void IsOrderExpired_ShouldReturnTrue_WhenOrderIsAtLimit()
     {
         // Arrange
-        var order = AutoFaker.Generate<Order>();
+        var order = fakers.orderFaker.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
         order.CreatedAt = DateTime.UtcNow.AddMinutes(order.Store.OrderCancelationLimitInMinutes);
 
@@ -88,7 +88,7 @@ public class OrdersServiceTestsNoMock : TestBase
     public async Task CancelOrder_GivenExpiredOrder_ShouldReturnErrorMessage()
     {
         // Arrange
-        var order = AutoFaker.Generate<Order>();
+        var order = fakers.orderFaker.Generate();
         order.Status = OrderStatus.Pending;
         order.Store.OrderCancelationLimitInMinutes = 60;
         order.CreatedAt = DateTime.UtcNow.AddMinutes(
@@ -111,7 +111,7 @@ public class OrdersServiceTestsNoMock : TestBase
     public async Task CancelOrder_GivenNotExpiredOrder_ShouldReturnNull_And_UpdateOrderStatusToCanceled()
     {
         // Arrange
-        var order = AutoFaker.Generate<Order>();
+        var order = fakers.orderFaker.Generate();
         order.Status = OrderStatus.Pending;
         order.Store.OrderCancelationLimitInMinutes = 60;
         order.CreatedAt = DateTime.UtcNow.AddMinutes(
@@ -140,10 +140,15 @@ public class OrdersServiceTestsNoMock : TestBase
     )
     {
         // Arrange
-        var attendant1 = GetCleanAttendant();
-        var attendant2 = GetCleanAttendant();
-        var attendant3 = GetCleanAttendant();
+        var attendant1 = fakers.attendantFaker.Generate();
+        var attendant2 = fakers.attendantFaker.Generate();
+        var attendant3 = fakers.attendantFaker.Generate();
         var attendants = new List<Attendant> { attendant1, attendant2, attendant3 };
+        attendants.ForEach(async a =>
+        {
+            await DbContext.Attendants.AddAsync(a);
+            await DbContext.SaveChangesAsync();
+        });
         await CreateOrdersForAttendantAndStore(attendant1, attendant1OrdersQuantity);
         await CreateOrdersForAttendantAndStore(attendant2, attendant2OrdersQuantity);
         await CreateOrdersForAttendantAndStore(attendant3, attendant3OrdersQuantity);
@@ -166,9 +171,9 @@ public class OrdersServiceTestsNoMock : TestBase
     )
     {
         // Arrange
-        var attendant1 = GetCleanAttendant();
-        var attendant2 = GetCleanAttendant();
-        var attendant3 = GetCleanAttendant();
+        var attendant1 = fakers.attendantFaker.Generate();
+        var attendant2 = fakers.attendantFaker.Generate();
+        var attendant3 = fakers.attendantFaker.Generate();
         await DbContext.AddAsync(attendant1);
         await DbContext.AddAsync(attendant2);
         await DbContext.AddAsync(attendant3);
@@ -178,8 +183,7 @@ public class OrdersServiceTestsNoMock : TestBase
         for (int i = 0; i < ordersQuantity; i++)
         {
             // Act
-            var order = AutoFaker.Generate<Order>();
-            order.Store.Orders = [];
+            var order = fakers.orderFaker.Generate();
             order.Attendant = await attendantService.GetNextAttendantIdForOrderDistributionAsync();
             await DbContext.Orders.AddAsync(order);
             await DbContext.SaveChangesAsync();
@@ -206,19 +210,11 @@ public class OrdersServiceTestsNoMock : TestBase
         ordersCount.Should().Be(ordersQuantity, "orders count should be 100");
     }
 
-    private static Attendant GetCleanAttendant()
-    {
-        var attendant = AutoFaker.Generate<Attendant>();
-        attendant.Orders = [];
-        return attendant;
-    }
-
     private async Task CreateOrdersForAttendantAndStore(Attendant attendant, int quantity)
     {
         for (int i = 0; i < quantity; i++)
         {
-            var order = AutoFaker.Generate<Order>();
-            order.Store.Orders = [];
+            var order = fakers.orderFaker.Generate();
             order.Attendant = attendant;
             await DbContext.Orders.AddAsync(order);
             await DbContext.SaveChangesAsync();
