@@ -128,16 +128,25 @@ public class OrdersServiceTestsNoMock : TestBase
         order.Status.Should().Be(OrderStatus.Cancelled, "order status should be changed");
     }
 
-    [Fact]
-    public async Task GetNextAttendantForOrderDistributionAsync_ShouldReturnAttendant()
+    [Theory]
+    [InlineData(10, 11, 11, 0)]
+    [InlineData(11, 10, 11, 1)]
+    [InlineData(11, 11, 10, 2)]
+    public async Task GetNextAttendantForOrderDistributionAsync_ShouldReturnAttendant(
+        int attendant1OrdersQuantity,
+        int attendant2OrdersQuantity,
+        int attendant3OrdersQuantity,
+        int expected
+    )
     {
         // Arrange
         var attendant1 = GetCleanAttendant();
         var attendant2 = GetCleanAttendant();
         var attendant3 = GetCleanAttendant();
-        await CreateOrdersForAttendantAndStore(attendant1, 11);
-        await CreateOrdersForAttendantAndStore(attendant2, 11);
-        await CreateOrdersForAttendantAndStore(attendant3, 10);
+        var attendants = new List<Attendant> { attendant1, attendant2, attendant3 };
+        await CreateOrdersForAttendantAndStore(attendant1, attendant1OrdersQuantity);
+        await CreateOrdersForAttendantAndStore(attendant2, attendant2OrdersQuantity);
+        await CreateOrdersForAttendantAndStore(attendant3, attendant3OrdersQuantity);
         var attendantService = Scope.GetService<IAttendantService>();
 
         // Act
@@ -146,11 +155,15 @@ public class OrdersServiceTestsNoMock : TestBase
         // Assert
         result
             .Should()
-            .Be(attendant3.Id, "the attendant with the least orders should be returned");
+            .Be(attendants[expected], "the attendant with the least orders should be returned");
     }
 
-    [Fact]
-    public async Task GetNextAttendantForOrderDistributionAsync_ShouldReturnAttendant2()
+    [Theory]
+    [InlineData(50)]
+    [InlineData(100)]
+    public async Task GetNextAttendantForOrderDistributionAsync_ShouldReturnAttendant2(
+        int ordersQuantity
+    )
     {
         // Arrange
         var attendant1 = GetCleanAttendant();
@@ -162,13 +175,12 @@ public class OrdersServiceTestsNoMock : TestBase
         await DbContext.SaveChangesAsync();
         var attendantService = Scope.GetService<IAttendantService>();
 
-        for (int i = 0; i < 100; i++)
+        for (int i = 0; i < ordersQuantity; i++)
         {
             // Act
             var order = AutoFaker.Generate<Order>();
             order.Store.Orders = [];
-            var attendantId = await attendantService.GetNextAttendantIdForOrderDistributionAsync();
-            order.Attendant = await DbContext.Attendants.FindAsync(attendantId);
+            order.Attendant = await attendantService.GetNextAttendantIdForOrderDistributionAsync();
             await DbContext.Orders.AddAsync(order);
             await DbContext.SaveChangesAsync();
 
@@ -191,7 +203,7 @@ public class OrdersServiceTestsNoMock : TestBase
         }
 
         var ordersCount = await DbContext.Orders.CountAsync();
-        ordersCount.Should().Be(100, "orders count should be 100");
+        ordersCount.Should().Be(ordersQuantity, "orders count should be 100");
     }
 
     private static Attendant GetCleanAttendant()
