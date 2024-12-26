@@ -5,9 +5,9 @@ namespace FakeStoreXunitTests.Fixtures;
 
 public class Fakers
 {
-    public AutoFaker<Attendant> attendant;
-    public AutoFaker<Store> store;
-    public AutoFaker<Order> order;
+    public readonly AutoFaker<Attendant> attendant;
+    public readonly AutoFaker<Store> store;
+    public readonly AutoFaker<Order> order;
 
     public Fakers()
     {

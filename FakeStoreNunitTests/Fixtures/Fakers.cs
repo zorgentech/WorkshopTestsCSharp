@@ -5,34 +5,22 @@ namespace FakeStoreNunitTests.Fixtures;
 
 public class Fakers
 {
-    public AutoFaker<Attendant> attendantFaker;
-    public AutoFaker<Store> storeFaker;
-    public AutoFaker<Order> orderFaker;
+    public readonly AutoFaker<Attendant> attendant;
+    public readonly AutoFaker<Store> store;
+    public readonly AutoFaker<Order> order;
 
     public Fakers()
     {
-        attendantFaker = new AutoFaker<Attendant>();
-        attendantFaker.RuleFor(a => a.Orders, () => []);
-        attendantFaker.RuleFor(a => a.Stores, () => []);
+        attendant = new AutoFaker<Attendant>();
+        attendant.RuleFor(a => a.Orders, () => null);
+        attendant.RuleFor(a => a.Stores, () => null);
 
-        storeFaker = new AutoFaker<Store>();
-        storeFaker.RuleFor(s => s.Attendants, () => []);
-        storeFaker.RuleFor(s => s.Orders, () => []);
+        store = new AutoFaker<Store>();
+        store.RuleFor(s => s.Attendants, () => null);
+        store.RuleFor(s => s.Orders, () => null);
 
-        orderFaker = new AutoFaker<Order>();
-        orderFaker.RuleFor(
-            o => o.Attendant,
-            () =>
-            {
-                return attendantFaker.Generate();
-            }
-        );
-        orderFaker.RuleFor(
-            o => o.Store,
-            () =>
-            {
-                return storeFaker.Generate();
-            }
-        );
+        order = new AutoFaker<Order>();
+        order.RuleFor(o => o.Attendant, () => attendant.Generate());
+        order.RuleFor(o => o.Store, () => store.Generate());
     }
 }

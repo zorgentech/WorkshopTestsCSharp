@@ -25,14 +25,14 @@ public class OrdersServiceTests
     public void IsOrderExpired_ShouldReturnTrue_WhenOrderIsExpired()
     {
         // Arrange
-        var order = fakers.orderFaker.Generate();
+        var order = fakers.order.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
         order.CreatedAt = DateTime.UtcNow.AddMinutes(
-            order.Store.OrderCancelationLimitInMinutes + 1
+            (double)(order.Store.OrderCancelationLimitInMinutes + 1)
         );
 
         // Act
-        var result = ordersService.Object.IsOrderExpired(order);
+        var result = ordersService.Object.IsOrderExpired((Order)order);
 
         // Assert
         result
@@ -47,14 +47,14 @@ public class OrdersServiceTests
     public void IsOrderExpired_ShouldReturnFalse_WhenOrderIsNotExpired()
     {
         // Arrange
-        var order = fakers.orderFaker.Generate();
+        var order = fakers.order.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
         order.CreatedAt = DateTime.UtcNow.AddMinutes(
-            order.Store.OrderCancelationLimitInMinutes - 1
+            (double)(order.Store.OrderCancelationLimitInMinutes - 1)
         );
 
         // Act
-        var result = ordersService.Object.IsOrderExpired(order);
+        var result = ordersService.Object.IsOrderExpired((Order)order);
 
         // Assert
         result
@@ -69,12 +69,14 @@ public class OrdersServiceTests
     public void IsOrderExpired_ShouldReturnTrue_WhenOrderIsAtLimit()
     {
         // Arrange
-        var order = fakers.orderFaker.Generate();
+        var order = fakers.order.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
-        order.CreatedAt = DateTime.UtcNow.AddMinutes(order.Store.OrderCancelationLimitInMinutes);
+        order.CreatedAt = DateTime.UtcNow.AddMinutes(
+            (double)order.Store.OrderCancelationLimitInMinutes
+        );
 
         // Act
-        var result = ordersService.Object.IsOrderExpired(order);
+        var result = ordersService.Object.IsOrderExpired((Order)order);
 
         // Assert
         result
@@ -89,14 +91,14 @@ public class OrdersServiceTests
     public async Task CancelOrder_GivenExpiredOrder_ShouldReturnErrorMessage()
     {
         // Arrange
-        var order = fakers.orderFaker.Generate();
+        var order = fakers.order.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
         order.CreatedAt = DateTime.UtcNow.AddMinutes(
-            order.Store.OrderCancelationLimitInMinutes + 1
+            (double)(order.Store.OrderCancelationLimitInMinutes + 1)
         );
 
         // Act
-        var result = await ordersService.Object.CancelOrderAsync(order);
+        var result = await ordersService.Object.CancelOrderAsync((Order)order);
 
         // Assert
         result
@@ -108,17 +110,17 @@ public class OrdersServiceTests
     public async Task CancelOrder_GivenNotExpiredOrder_ShouldReturnNull_And_UpdateOrderStatusToCanceled()
     {
         // Arrange
-        var order = fakers.orderFaker.Generate();
+        var order = fakers.order.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
         order.CreatedAt = DateTime.UtcNow.AddMinutes(
-            order.Store.OrderCancelationLimitInMinutes - 1
+            (double)(order.Store.OrderCancelationLimitInMinutes - 1)
         );
         ordersRepositoryMock
             .Setup(x => x.UpdateOrderAsync(It.Is<Order>(x => x.Status == OrderStatus.Cancelled)))
             .Returns(Task.CompletedTask);
 
         // Act
-        var result = await ordersService.Object.CancelOrderAsync(order);
+        var result = await ordersService.Object.CancelOrderAsync((Order)order);
 
         // Assert
         result.Should().BeNull("no error message should be returned");
