@@ -12,12 +12,12 @@ public class Fakers
     public Fakers()
     {
         attendant = new AutoFaker<Attendant>();
-        attendant.RuleFor(a => a.Orders, () => []);
-        attendant.RuleFor(a => a.Stores, () => []);
+        attendant.RuleFor(a => a.Orders, () => null);
+        attendant.RuleFor(a => a.Stores, () => null);
 
         store = new AutoFaker<Store>();
-        store.RuleFor(s => s.Attendants, () => []);
-        store.RuleFor(s => s.Orders, () => []);
+        store.RuleFor(s => s.Attendants, () => null);
+        store.RuleFor(s => s.Orders, () => null);
 
         order = new AutoFaker<Order>();
         order.RuleFor(o => o.Attendant, () => attendant.Generate());

@@ -132,7 +132,7 @@ public class OrdersServiceTestsNoMock : TestBase
     [InlineData(10, 11, 11, 0)]
     [InlineData(11, 10, 11, 1)]
     [InlineData(11, 11, 10, 2)]
-    public async Task GetNextAttendantForOrderDistributionAsync_ShouldReturnAttendant(
+    public async Task GetNextAttendantForOrderDistributionAsync_ShouldReturnAttendantWithFewerOrders(
         int attendant1OrdersQuantity,
         int attendant2OrdersQuantity,
         int attendant3OrdersQuantity,
@@ -166,7 +166,7 @@ public class OrdersServiceTestsNoMock : TestBase
     [Theory]
     [InlineData(50)]
     [InlineData(100)]
-    public async Task GetNextAttendantForOrderDistributionAsync_ShouldReturnAttendant2(
+    public async Task GetNextAttendantForOrderDistributionAsync_ShouldReturnAttendantWithFewerOrders2(
         int ordersQuantity
     )
     {
