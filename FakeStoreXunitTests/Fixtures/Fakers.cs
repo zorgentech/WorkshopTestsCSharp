@@ -20,19 +20,7 @@ public class Fakers
         store.RuleFor(s => s.Orders, () => []);
 
         order = new AutoFaker<Order>();
-        order.RuleFor(
-            o => o.Attendant,
-            () =>
-            {
-                return attendant.Generate();
-            }
-        );
-        order.RuleFor(
-            o => o.Store,
-            () =>
-            {
-                return store.Generate();
-            }
-        );
+        order.RuleFor(o => o.Attendant, () => attendant.Generate());
+        order.RuleFor(o => o.Store, () => store.Generate());
     }
 }
