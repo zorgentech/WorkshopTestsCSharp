@@ -5,6 +5,7 @@ using FakeStore.Services;
 using FakeStoreXunitTests.Extensions;
 using FakeStoreXunitTests.Fixtures;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 
 namespace FakeStoreXunitTests.Tests;
 
@@ -146,6 +147,51 @@ public class OrdersServiceTestsNoMock : TestBase
         result
             .Should()
             .Be(attendant3.Id, "the attendant with the least orders should be returned");
+    }
+
+    [Fact]
+    public async Task GetNextAttendantForOrderDistributionAsync_ShouldReturnAttendant2()
+    {
+        // Arrange
+        var attendant1 = GetCleanAttendant();
+        var attendant2 = GetCleanAttendant();
+        var attendant3 = GetCleanAttendant();
+        await DbContext.AddAsync(attendant1);
+        await DbContext.AddAsync(attendant2);
+        await DbContext.AddAsync(attendant3);
+        await DbContext.SaveChangesAsync();
+        var attendantService = Scope.GetService<IAttendantService>();
+
+        for (int i = 0; i < 100; i++)
+        {
+            // Act
+            var order = AutoFaker.Generate<Order>();
+            order.Store.Orders = [];
+            var attendantId = await attendantService.GetNextAttendantIdForOrderDistributionAsync();
+            order.Attendant = await DbContext.Attendants.FindAsync(attendantId);
+            await DbContext.Orders.AddAsync(order);
+            await DbContext.SaveChangesAsync();
+
+            // Assert
+            var attendantWithLeastOrders = await DbContext
+                .Attendants.Include(x => x.Orders)
+                .Select(x => new { x.Id, OrdersCount = x.Orders!.Count })
+                .OrderBy(x => x.OrdersCount)
+                .FirstAsync();
+            var attendantWithMoreOrders = await DbContext
+                .Attendants.Include(x => x.Orders)
+                .Select(x => new { x.Id, OrdersCount = x.Orders!.Count })
+                .OrderBy(x => x.OrdersCount)
+                .LastAsync();
+            var ordersCountDifference =
+                attendantWithMoreOrders.OrdersCount - attendantWithLeastOrders.OrdersCount;
+            ordersCountDifference
+                .Should()
+                .BeLessOrEqualTo(1, "orders count difference should be less than or equal 1");
+        }
+
+        var ordersCount = await DbContext.Orders.CountAsync();
+        ordersCount.Should().Be(100, "orders count should be 100");
     }
 
     private static Attendant GetCleanAttendant()
