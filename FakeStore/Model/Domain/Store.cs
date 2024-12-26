@@ -6,4 +6,7 @@ public class Store
     public string Name { get; set; }
     public string Address { get; set; }
     public int OrderCancelationLimitInMinutes { get; set; }
+
+    // Navigation attributes
+    public ICollection<Order>? Orders { get; set; }
 }

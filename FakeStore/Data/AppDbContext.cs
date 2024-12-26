@@ -13,11 +13,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<Order>()
-        .HasOne(o => o.Attendant)
-        .WithMany(a => a.Orders)
-        .HasForeignKey(o => o.AttendantId);
-
         // seed data, create a Store
         modelBuilder
             .Entity<Store>()

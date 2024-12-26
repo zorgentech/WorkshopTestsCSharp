@@ -4,5 +4,7 @@ public class Attendant
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
-    public ICollection<Order> Orders { get; set; }
+
+    // navigation attributes
+    public ICollection<Order>? Orders { get; set; }
 }
