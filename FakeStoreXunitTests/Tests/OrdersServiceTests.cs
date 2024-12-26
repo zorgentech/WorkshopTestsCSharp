@@ -24,7 +24,7 @@ public class OrdersServiceTests
     public void IsOrderExpired_WhenOrderIsExpired_ShouldReturnTrue()
     {
         // Arrange
-        var order = fakers.orderFaker.Generate();
+        var order = fakers.order.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
         order.CreatedAt = DateTime.UtcNow.AddMinutes(
             order.Store.OrderCancelationLimitInMinutes + 1
@@ -46,7 +46,7 @@ public class OrdersServiceTests
     public void IsOrderExpired_WhenOrderIsNotExpired_ShouldReturnFalse()
     {
         // Arrange
-        var order = fakers.orderFaker.Generate();
+        var order = fakers.order.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
         order.CreatedAt = DateTime.UtcNow.AddMinutes(
             order.Store.OrderCancelationLimitInMinutes - 1
@@ -68,7 +68,7 @@ public class OrdersServiceTests
     public void IsOrderExpired_WhenOrderIsAtLimit_ShouldReturnTrue()
     {
         // Arrange
-        var order = fakers.orderFaker.Generate();
+        var order = fakers.order.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
         order.CreatedAt = DateTime.UtcNow.AddMinutes(order.Store.OrderCancelationLimitInMinutes);
 
@@ -88,7 +88,7 @@ public class OrdersServiceTests
     public async Task CancelOrder_WhenOrderIsExpired_ShouldReturnErrorMessage()
     {
         // Arrange
-        var order = fakers.orderFaker.Generate();
+        var order = fakers.order.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
         order.CreatedAt = DateTime.UtcNow.AddMinutes(
             order.Store.OrderCancelationLimitInMinutes + 1
@@ -107,7 +107,7 @@ public class OrdersServiceTests
     public async Task CancelOrder_WhenOrderIsNotExpired_ShouldUpdateOrderStatusToCancelled_AndSaveToRepository()
     {
         // Arrange
-        var order = fakers.orderFaker.Generate();
+        var order = fakers.order.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
         order.CreatedAt = DateTime.UtcNow.AddMinutes(
             order.Store.OrderCancelationLimitInMinutes - 1

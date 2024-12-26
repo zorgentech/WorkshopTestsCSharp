@@ -24,7 +24,7 @@ public class OrdersServiceTestsNoMock : TestBase
     {
         // Arrange
 
-        var order = fakers.orderFaker.Generate();
+        var order = fakers.order.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
         order.CreatedAt = DateTime.UtcNow.AddMinutes(
             order.Store.OrderCancelationLimitInMinutes + 1
@@ -46,7 +46,7 @@ public class OrdersServiceTestsNoMock : TestBase
     public void IsOrderExpired_ShouldReturnFalse_WhenOrderIsNotExpired()
     {
         // Arrange
-        var order = fakers.orderFaker.Generate();
+        var order = fakers.order.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
         order.CreatedAt = DateTime.UtcNow.AddMinutes(
             order.Store.OrderCancelationLimitInMinutes - 1
@@ -68,7 +68,7 @@ public class OrdersServiceTestsNoMock : TestBase
     public void IsOrderExpired_ShouldReturnTrue_WhenOrderIsAtLimit()
     {
         // Arrange
-        var order = fakers.orderFaker.Generate();
+        var order = fakers.order.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
         order.CreatedAt = DateTime.UtcNow.AddMinutes(order.Store.OrderCancelationLimitInMinutes);
 
@@ -88,7 +88,7 @@ public class OrdersServiceTestsNoMock : TestBase
     public async Task CancelOrder_GivenExpiredOrder_ShouldReturnErrorMessage()
     {
         // Arrange
-        var order = fakers.orderFaker.Generate();
+        var order = fakers.order.Generate();
         order.Status = OrderStatus.Pending;
         order.Store.OrderCancelationLimitInMinutes = 60;
         order.CreatedAt = DateTime.UtcNow.AddMinutes(
@@ -111,7 +111,7 @@ public class OrdersServiceTestsNoMock : TestBase
     public async Task CancelOrder_GivenNotExpiredOrder_ShouldReturnNull_And_UpdateOrderStatusToCanceled()
     {
         // Arrange
-        var order = fakers.orderFaker.Generate();
+        var order = fakers.order.Generate();
         order.Status = OrderStatus.Pending;
         order.Store.OrderCancelationLimitInMinutes = 60;
         order.CreatedAt = DateTime.UtcNow.AddMinutes(
@@ -140,9 +140,9 @@ public class OrdersServiceTestsNoMock : TestBase
     )
     {
         // Arrange
-        var attendant1 = fakers.attendantFaker.Generate();
-        var attendant2 = fakers.attendantFaker.Generate();
-        var attendant3 = fakers.attendantFaker.Generate();
+        var attendant1 = fakers.attendant.Generate();
+        var attendant2 = fakers.attendant.Generate();
+        var attendant3 = fakers.attendant.Generate();
         var attendants = new List<Attendant> { attendant1, attendant2, attendant3 };
         attendants.ForEach(async a =>
         {
@@ -171,9 +171,9 @@ public class OrdersServiceTestsNoMock : TestBase
     )
     {
         // Arrange
-        var attendant1 = fakers.attendantFaker.Generate();
-        var attendant2 = fakers.attendantFaker.Generate();
-        var attendant3 = fakers.attendantFaker.Generate();
+        var attendant1 = fakers.attendant.Generate();
+        var attendant2 = fakers.attendant.Generate();
+        var attendant3 = fakers.attendant.Generate();
         await DbContext.AddAsync(attendant1);
         await DbContext.AddAsync(attendant2);
         await DbContext.AddAsync(attendant3);
@@ -183,7 +183,7 @@ public class OrdersServiceTestsNoMock : TestBase
         for (int i = 0; i < ordersQuantity; i++)
         {
             // Act
-            var order = fakers.orderFaker.Generate();
+            var order = fakers.order.Generate();
             order.Attendant = await attendantService.GetNextAttendantIdForOrderDistributionAsync();
             await DbContext.Orders.AddAsync(order);
             await DbContext.SaveChangesAsync();
@@ -214,7 +214,7 @@ public class OrdersServiceTestsNoMock : TestBase
     {
         for (int i = 0; i < quantity; i++)
         {
-            var order = fakers.orderFaker.Generate();
+            var order = fakers.order.Generate();
             order.Attendant = attendant;
             await DbContext.Orders.AddAsync(order);
             await DbContext.SaveChangesAsync();
