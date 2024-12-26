@@ -1,15 +1,21 @@
 ﻿using FakeStore.Data;
-using FakeStore.Model.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace FakeStore.Services;
 
 public class AttendantService(AppDbContext dbContext) : IAttendantService
 {
-    public Task<Attendant> GetAttendantForOrderAsync()
+    public async Task<Guid?> GetNextAttendantIdForOrderDistributionAsync()
     {
-        // Annotate Orders quantity for each attendant
-        var queryset = dbContext.Attendants.Include(x => x.Orders);
-        throw new NotImplementedException();
+        var result = await dbContext
+            .Attendants.Include(x => x.Orders)
+            .Select(a => new { a.Id, OrdersCount = a.Orders!.Count })
+            .OrderBy(r => r.OrdersCount)
+            .FirstAsync();
+        if (result != null)
+        {
+            return result.Id;
+        }
+        return null;
     }
 }

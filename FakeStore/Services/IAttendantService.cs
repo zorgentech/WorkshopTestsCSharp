@@ -1,8 +1,6 @@
-﻿using FakeStore.Model.Domain;
-
-namespace FakeStore.Services;
+﻿namespace FakeStore.Services;
 
 public interface IAttendantService
 {
-    Task<Attendant> GetAttendantForOrderAsync();
+    Task<Guid?> GetNextAttendantIdForOrderDistributionAsync();
 }

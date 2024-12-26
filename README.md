@@ -16,23 +16,22 @@ Na tela de aprovar alteração de produto, cliente clica em “Cancelar pedido�
 
 O sistema deve recusar a solicitação de cancelamento do pedido, pois a ação foi realizada após o limite de tempo de 1 hora, que expirou às 18:00.
 
-
-
 # Feature 2
 
 ## Arrange
+
 API Integrador de Leads.​
 
 ## Action
+
 A API Foi atualizada com novos campos
 
 ## Assert
+
 A versão atual da API deve continuar aceitando novos Leads após a nova versão ser atualizada com novos campos.
 
-
-
-1  2  3
+1 2 3
 22 22 22
 
-Order
-Attendant
+Attendant pai - consultor
+Order filho - lead
