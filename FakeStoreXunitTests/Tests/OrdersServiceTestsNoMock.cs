@@ -126,4 +126,44 @@ public class OrdersServiceTestsNoMock : TestBase
         result.Should().BeNull("no error message should be returned");
         order.Status.Should().Be(OrderStatus.Cancelled, "order status should be changed");
     }
+
+    [Fact]
+    public async Task GetNextAttendantForOrderDistributionAsync_ShouldReturnAttendant()
+    {
+        // Arrange
+        var attendant1 = GetCleanAttendant();
+        var attendant2 = GetCleanAttendant();
+        var attendant3 = GetCleanAttendant();
+        await CreateOrdersForAttendantAndStore(attendant1, 11);
+        await CreateOrdersForAttendantAndStore(attendant2, 11);
+        await CreateOrdersForAttendantAndStore(attendant3, 10);
+        var attendantService = Scope.GetService<IAttendantService>();
+
+        // Act
+        var result = await attendantService.GetNextAttendantIdForOrderDistributionAsync();
+
+        // Assert
+        result
+            .Should()
+            .Be(attendant3.Id, "the attendant with the least orders should be returned");
+    }
+
+    private static Attendant GetCleanAttendant()
+    {
+        var attendant = AutoFaker.Generate<Attendant>();
+        attendant.Orders = [];
+        return attendant;
+    }
+
+    private async Task CreateOrdersForAttendantAndStore(Attendant attendant, int quantity)
+    {
+        for (int i = 0; i < quantity; i++)
+        {
+            var order = AutoFaker.Generate<Order>();
+            order.Store.Orders = [];
+            order.Attendant = attendant;
+            await DbContext.Orders.AddAsync(order);
+            await DbContext.SaveChangesAsync();
+        }
+    }
 }
