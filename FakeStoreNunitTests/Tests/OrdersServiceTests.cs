@@ -28,7 +28,7 @@ public class OrdersServiceTests
         var order = fakers.order.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
         order.CreatedAt = DateTime.UtcNow.AddMinutes(
-            (double)(order.Store.OrderCancelationLimitInMinutes + 1)
+            order.Store.OrderCancelationLimitInMinutes + 1
         );
 
         // Act
@@ -50,7 +50,7 @@ public class OrdersServiceTests
         var order = fakers.order.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
         order.CreatedAt = DateTime.UtcNow.AddMinutes(
-            (double)(order.Store.OrderCancelationLimitInMinutes - 1)
+            order.Store.OrderCancelationLimitInMinutes - 1
         );
 
         // Act
@@ -71,9 +71,7 @@ public class OrdersServiceTests
         // Arrange
         var order = fakers.order.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
-        order.CreatedAt = DateTime.UtcNow.AddMinutes(
-            (double)order.Store.OrderCancelationLimitInMinutes
-        );
+        order.CreatedAt = DateTime.UtcNow.AddMinutes(order.Store.OrderCancelationLimitInMinutes);
 
         // Act
         var result = ordersService.Object.IsOrderExpired((Order)order);
@@ -94,7 +92,7 @@ public class OrdersServiceTests
         var order = fakers.order.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
         order.CreatedAt = DateTime.UtcNow.AddMinutes(
-            (double)(order.Store.OrderCancelationLimitInMinutes + 1)
+            order.Store.OrderCancelationLimitInMinutes + 1
         );
 
         // Act
@@ -113,7 +111,7 @@ public class OrdersServiceTests
         var order = fakers.order.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
         order.CreatedAt = DateTime.UtcNow.AddMinutes(
-            (double)(order.Store.OrderCancelationLimitInMinutes - 1)
+            order.Store.OrderCancelationLimitInMinutes - 1
         );
         ordersRepositoryMock
             .Setup(x => x.UpdateOrderAsync(It.Is<Order>(x => x.Status == OrderStatus.Cancelled)))
