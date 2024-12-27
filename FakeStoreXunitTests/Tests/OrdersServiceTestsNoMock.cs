@@ -195,7 +195,7 @@ public class OrdersServiceTestsNoMock : TestBase
         }
 
         var ordersCount = await DbContext.Orders.CountAsync();
-        ordersCount.Should().Be(ordersQuantity, "orders count should be 100");
+        ordersCount.Should().Be(ordersQuantity, $"orders count should be {ordersQuantity}");
     }
 
     private async Task CreateOrdersForAttendantAndStore(Attendant attendant, int quantity)
