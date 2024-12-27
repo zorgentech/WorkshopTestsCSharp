@@ -9,22 +9,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FakeStoreXunitTests.Tests;
 
-public class OrdersServiceTestsNoMock : TestBase
+public class OrdersServiceTestsNoMock(MySetUpFixture mySetUpFixture) : TestBase(mySetUpFixture)
 {
-    public IOrdersService ordersService;
+    public IOrdersService ordersService => Scope.GetService<IOrdersService>();
     public Fakers fakers = new();
-
-    public OrdersServiceTestsNoMock(DbFixture dbFixture)
-        : base(dbFixture)
-    {
-        ordersService = Scope.GetService<IOrdersService>();
-    }
 
     [Fact]
     public void IsOrderExpired_ShouldReturnTrue_WhenOrderIsExpired()
     {
         // Arrange
-
         var order = fakers.order.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
         order.CreatedAt = DateTime.UtcNow.AddMinutes(

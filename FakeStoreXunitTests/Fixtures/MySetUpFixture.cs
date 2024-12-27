@@ -5,11 +5,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FakeStoreXunitTests.Fixtures;
 
-public class DbFixture
+public class MySetUpFixture
 {
     public readonly CustomWebApplicationFactory<Program> Factory;
 
-    public DbFixture()
+    public MySetUpFixture()
     {
         Factory = new CustomWebApplicationFactory<Program>();
         CreateAndSeedDatabase();

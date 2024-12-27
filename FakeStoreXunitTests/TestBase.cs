@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FakeStoreXunitTests;
 
-public class TestBase : IClassFixture<DbFixture>, IAsyncLifetime
+public class TestBase : IClassFixture<MySetUpFixture>, IAsyncLifetime
 {
     private IDbContextTransaction _transaction;
     public IServiceScope Scope;
@@ -15,7 +15,7 @@ public class TestBase : IClassFixture<DbFixture>, IAsyncLifetime
     public AppDbContext DbContext;
     public HttpClient Client;
 
-    public TestBase(DbFixture dbFixture)
+    public TestBase(MySetUpFixture dbFixture)
     {
         Factory = dbFixture.Factory;
         Scope = Factory.Services.CreateScope();

@@ -19,7 +19,7 @@ public class TestBase
     [SetUp]
     public async Task InitializeAsync()
     {
-        Factory = DbFixture.Factory;
+        Factory = MySetUpFixture.Factory;
         Scope = Factory.Services.CreateScope();
         DbContext = Scope.GetService<AppDbContext>();
         Client = Factory.CreateClient();
