@@ -9,8 +9,9 @@ namespace FakeStoreNunitTests;
 
 public class TestBase
 {
+    private static bool _databaseCreated = false;
     private IDbContextTransaction _transaction;
-    public CustomWebApplicationFactory<Program> Factory;
+    public static readonly CustomWebApplicationFactory<Program> Factory = new();
     public IServiceScope Scope;
     public AppDbContext DbContext;
     public HttpClient Client;
@@ -19,10 +20,14 @@ public class TestBase
     [SetUp]
     public async Task InitializeAsync()
     {
-        Factory = MySetUpFixture.Factory;
         Scope = Factory.Services.CreateScope();
         DbContext = Scope.GetService<AppDbContext>();
         Client = Factory.CreateClient();
+        if (!_databaseCreated)
+        {
+            CreateDatabase();
+            _databaseCreated = true;
+        }
         _transaction = await DbContext.Database.BeginTransactionAsync();
     }
 
@@ -33,5 +38,25 @@ public class TestBase
         await DbContext.DisposeAsync();
         Client.Dispose();
         Scope.Dispose();
+    }
+
+    private void CreateDatabase()
+    {
+        try
+        {
+            DbContext.Database.EnsureDeleted();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+        try
+        {
+            DbContext.Database.EnsureCreated();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
     }
 }

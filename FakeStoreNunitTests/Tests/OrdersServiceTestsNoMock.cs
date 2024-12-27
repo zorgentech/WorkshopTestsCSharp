@@ -10,13 +10,7 @@ namespace FakeStoreNunitTests.Tests;
 
 public class OrdersServiceTestsNoMock : TestBase
 {
-    public IOrdersService ordersService;
-
-    [SetUp]
-    public void SetUp()
-    {
-        ordersService = Scope.GetService<IOrdersService>();
-    }
+    public IOrdersService OrdersService => Scope.GetService<IOrdersService>();
 
     [Test]
     public void IsOrderExpired_ShouldReturnTrue_WhenOrderIsExpired()
@@ -30,7 +24,7 @@ public class OrdersServiceTestsNoMock : TestBase
         );
 
         // Act
-        var result = ordersService.IsOrderExpired(order);
+        var result = OrdersService.IsOrderExpired(order);
 
         // Assert
         result
@@ -52,7 +46,7 @@ public class OrdersServiceTestsNoMock : TestBase
         );
 
         // Act
-        var result = ordersService.IsOrderExpired(order);
+        var result = OrdersService.IsOrderExpired(order);
 
         // Assert
         result
@@ -72,7 +66,7 @@ public class OrdersServiceTestsNoMock : TestBase
         order.CreatedAt = DateTime.UtcNow.AddMinutes(order.Store.OrderCancelationLimitInMinutes);
 
         // Act
-        var result = ordersService.IsOrderExpired(order);
+        var result = OrdersService.IsOrderExpired(order);
 
         // Assert
         result
@@ -97,7 +91,7 @@ public class OrdersServiceTestsNoMock : TestBase
         await DbContext.SaveChangesAsync();
 
         // Act
-        var result = await ordersService.CancelOrderAsync(order);
+        var result = await OrdersService.CancelOrderAsync(order);
 
         // Assert
         result
@@ -120,7 +114,7 @@ public class OrdersServiceTestsNoMock : TestBase
         await DbContext.SaveChangesAsync();
 
         // Act
-        var result = await ordersService.CancelOrderAsync(order);
+        var result = await OrdersService.CancelOrderAsync(order);
 
         // Assert
         result.Should().BeNull("no error message should be returned");

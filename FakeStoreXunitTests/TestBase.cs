@@ -26,7 +26,7 @@ public class TestBase : IAsyncLifetime
     {
         if (!_databaseCreated)
         {
-            CreateAndSeedDatabase();
+            CreateDatabase();
             _databaseCreated = true;
         }
 
@@ -41,7 +41,7 @@ public class TestBase : IAsyncLifetime
         Scope.Dispose();
     }
 
-    private void CreateAndSeedDatabase()
+    private void CreateDatabase()
     {
         try
         {
