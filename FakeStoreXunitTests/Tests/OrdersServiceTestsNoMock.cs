@@ -122,40 +122,8 @@ public class OrdersServiceTestsNoMock : TestBase
     }
 
     [Theory]
-    [InlineData(10, 11, 11, 0)]
-    [InlineData(11, 10, 11, 1)]
-    [InlineData(11, 11, 10, 2)]
-    public async Task GetNextAttendantForOrderDistributionAsync_ShouldReturnAttendantWithFewerOrders(
-        int attendant1OrdersQuantity,
-        int attendant2OrdersQuantity,
-        int attendant3OrdersQuantity,
-        int expected
-    )
-    {
-        // Arrange
-        var attendant1 = fakers.attendant.Generate();
-        var attendant2 = fakers.attendant.Generate();
-        var attendant3 = fakers.attendant.Generate();
-        var attendants = new List<Attendant> { attendant1, attendant2, attendant3 };
-        await DbContext.AddRangeAsync(attendants);
-        await DbContext.SaveChangesAsync();
-        await CreateOrdersForAttendantAndStore(attendant1, attendant1OrdersQuantity);
-        await CreateOrdersForAttendantAndStore(attendant2, attendant2OrdersQuantity);
-        await CreateOrdersForAttendantAndStore(attendant3, attendant3OrdersQuantity);
-        var attendantService = Scope.GetService<IAttendantService>();
-
-        // Act
-        var result = await attendantService.GetNextAttendantIdForOrderDistributionAsync();
-
-        // Assert
-        result
-            .Should()
-            .Be(attendants[expected], "the attendant with the least orders should be returned");
-    }
-
-    [Theory]
-    [InlineData(50)]
-    [InlineData(100)]
+    [InlineData(4)]
+    [InlineData(10)]
     public async Task GetNextAttendantForOrderDistributionAsync_ShouldReturnAttendantWithFewerOrders2(
         int ordersQuantity
     )
@@ -170,6 +138,7 @@ public class OrdersServiceTestsNoMock : TestBase
 
         for (int i = 0; i < ordersQuantity; i++)
         {
+            await Task.Delay(1000);
             // Act
             var order = fakers.order.Generate();
             order.Attendant = await attendantService.GetNextAttendantIdForOrderDistributionAsync();

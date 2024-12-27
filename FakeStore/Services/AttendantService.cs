@@ -10,12 +10,12 @@ public class AttendantService(AppDbContext dbContext) : IAttendantService
     {
         var result = await dbContext
             .Attendants.Include(x => x.Orders)
-            .Select(a => new { a, OrdersCount = a.Orders!.Count })
-            .OrderBy(r => r.OrdersCount)
-            .FirstAsync();
+            .Select(a => new { a, LastOrderCreatedAt = a.Orders!.OrderBy(o => o.CreatedAt).LastOrDefault() })
+            .OrderBy(r => r.LastOrderCreatedAt == null ? DateTime.MinValue : r.LastOrderCreatedAt.CreatedAt)
+            .ToListAsync();
         if (result != null)
         {
-            return result.a;
+            return result.First().a;
         }
         return null;
     }

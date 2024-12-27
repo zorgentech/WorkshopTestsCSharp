@@ -22,5 +22,6 @@ public class Fakers
         order = new AutoFaker<Order>();
         order.RuleFor(o => o.Attendant, () => attendant.Generate());
         order.RuleFor(o => o.Store, () => store.Generate());
+        order.RuleFor(o => o.CreatedAt, () => DateTime.UtcNow);
     }
 }
