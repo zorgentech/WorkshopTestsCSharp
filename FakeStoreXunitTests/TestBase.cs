@@ -20,25 +20,21 @@ public class TestBase : IAsyncLifetime
         Scope = Factory.Services.CreateScope();
         DbContext = Scope.GetService<AppDbContext>();
         Client = Factory.CreateClient();
-    }
-
-    public async Task InitializeAsync()
-    {
         if (!_databaseCreated)
         {
             CreateDatabase();
             _databaseCreated = true;
         }
+    }
 
+    public async Task InitializeAsync()
+    {
         _transaction = await DbContext.Database.BeginTransactionAsync();
     }
 
     public async Task DisposeAsync()
     {
         await _transaction.DisposeAsync();
-        Client.Dispose();
-        DbContext.Dispose();
-        Scope.Dispose();
     }
 
     private void CreateDatabase()

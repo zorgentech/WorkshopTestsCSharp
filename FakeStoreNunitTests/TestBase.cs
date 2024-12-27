@@ -18,7 +18,7 @@ public class TestBase
     public Fakers Fakers = new();
 
     [SetUp]
-    public async Task InitializeAsync()
+    public void SetUp()
     {
         Scope = Factory.Services.CreateScope();
         DbContext = Scope.GetService<AppDbContext>();
@@ -28,15 +28,15 @@ public class TestBase
             CreateDatabase();
             _databaseCreated = true;
         }
-        _transaction = await DbContext.Database.BeginTransactionAsync();
+        _transaction = DbContext.Database.BeginTransaction();
     }
 
     [TearDown]
-    public async Task DisposeAsync()
+    public void TearDown()
     {
-        await _transaction.DisposeAsync();
-        await DbContext.DisposeAsync();
+        _transaction.Dispose();
         Client.Dispose();
+        DbContext.Dispose();
         Scope.Dispose();
     }
 
