@@ -2,16 +2,15 @@ using FakeStore.Model.Domain;
 using FakeStore.Model.Enums;
 using FakeStore.Services;
 using FakeStoreXunitTests.Extensions;
-using FakeStoreXunitTests.Fixtures;
 using FakeStoreXunitTests.Utils;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 
 namespace FakeStoreXunitTests.Tests;
 
-public class OrdersServiceTestsNoMock(MySetUpFixture mySetUpFixture) : TestBase(mySetUpFixture)
+public class OrdersServiceTestsNoMock : TestBase
 {
-    public IOrdersService ordersService => Scope.GetService<IOrdersService>();
+    public IOrdersService OrdersService => Scope.GetService<IOrdersService>();
     public Fakers fakers = new();
 
     [Fact]
@@ -25,7 +24,7 @@ public class OrdersServiceTestsNoMock(MySetUpFixture mySetUpFixture) : TestBase(
         );
 
         // Act
-        var result = ordersService.IsOrderExpired(order);
+        var result = OrdersService.IsOrderExpired(order);
 
         // Assert
         result
@@ -47,7 +46,7 @@ public class OrdersServiceTestsNoMock(MySetUpFixture mySetUpFixture) : TestBase(
         );
 
         // Act
-        var result = ordersService.IsOrderExpired(order);
+        var result = OrdersService.IsOrderExpired(order);
 
         // Assert
         result
@@ -67,7 +66,7 @@ public class OrdersServiceTestsNoMock(MySetUpFixture mySetUpFixture) : TestBase(
         order.CreatedAt = DateTime.UtcNow.AddMinutes(order.Store.OrderCancelationLimitInMinutes);
 
         // Act
-        var result = ordersService.IsOrderExpired(order);
+        var result = OrdersService.IsOrderExpired(order);
 
         // Assert
         result
@@ -92,7 +91,7 @@ public class OrdersServiceTestsNoMock(MySetUpFixture mySetUpFixture) : TestBase(
         await DbContext.SaveChangesAsync();
 
         // Act
-        var result = await ordersService.CancelOrderAsync(order);
+        var result = await OrdersService.CancelOrderAsync(order);
 
         // Assert
         result
@@ -115,7 +114,7 @@ public class OrdersServiceTestsNoMock(MySetUpFixture mySetUpFixture) : TestBase(
         await DbContext.SaveChangesAsync();
 
         // Act
-        var result = await ordersService.CancelOrderAsync(order);
+        var result = await OrdersService.CancelOrderAsync(order);
 
         // Assert
         result.Should().BeNull("no error message should be returned");
