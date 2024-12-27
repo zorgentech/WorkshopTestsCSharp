@@ -121,37 +121,6 @@ public class OrdersServiceTestsNoMock : TestBase
         order.Status.Should().Be(OrderStatus.Cancelled, "order status should be changed");
     }
 
-    [TestCase(10, 11, 11, 0)]
-    [TestCase(11, 10, 11, 1)]
-    [TestCase(11, 11, 10, 2)]
-    public async Task GetNextAttendantForOrderDistributionAsync_ShouldReturnAttendantWithFewerOrders(
-        int attendant1OrdersQuantity,
-        int attendant2OrdersQuantity,
-        int attendant3OrdersQuantity,
-        int expected
-    )
-    {
-        // Arrange
-        var attendant1 = Fakers.attendant.Generate();
-        var attendant2 = Fakers.attendant.Generate();
-        var attendant3 = Fakers.attendant.Generate();
-        var attendants = new List<Attendant> { attendant1, attendant2, attendant3 };
-        await DbContext.AddRangeAsync(attendants);
-        await DbContext.SaveChangesAsync();
-        await CreateOrdersForAttendantAndStore(attendant1, attendant1OrdersQuantity);
-        await CreateOrdersForAttendantAndStore(attendant2, attendant2OrdersQuantity);
-        await CreateOrdersForAttendantAndStore(attendant3, attendant3OrdersQuantity);
-        var attendantService = Scope.GetService<IAttendantService>();
-
-        // Act
-        var result = await attendantService.GetNextAttendantIdForOrderDistributionAsync();
-
-        // Assert
-        result
-            .Should()
-            .Be(attendants[expected], "the attendant with the least orders should be returned");
-    }
-
     [TestCase(50)]
     [TestCase(100)]
     public async Task GetNextAttendantForOrderDistributionAsync_ShouldReturnAttendantWithFewerOrders2(

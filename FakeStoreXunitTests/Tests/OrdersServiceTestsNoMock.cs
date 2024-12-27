@@ -138,7 +138,6 @@ public class OrdersServiceTestsNoMock : TestBase
 
         for (int i = 0; i < ordersQuantity; i++)
         {
-            await Task.Delay(1000);
             // Act
             var order = fakers.order.Generate();
             order.Attendant = await attendantService.GetNextAttendantIdForOrderDistributionAsync();
