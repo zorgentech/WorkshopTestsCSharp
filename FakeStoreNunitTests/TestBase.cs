@@ -1,38 +1,38 @@
 using FakeStore.Data;
-using FakeStoreXunitTests.Extensions;
+using FakeStoreNunitTests.Extensions;
+using FakeStoreNunitTests.Utils;
 using FakeStoreXunitTests.Factories;
-using FakeStoreXunitTests.Fixtures;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FakeStoreXunitTests;
+namespace FakeStoreNunitTests;
 
-public class TestBase : IClassFixture<DbFixture>, IAsyncLifetime
+public class TestBase
 {
     private IDbContextTransaction _transaction;
-    public IServiceScope Scope;
     public CustomWebApplicationFactory<Program> Factory;
+    public IServiceScope Scope;
     public AppDbContext DbContext;
     public HttpClient Client;
+    public Fakers Fakers = new();
 
-    public TestBase(DbFixture dbFixture)
+    [SetUp]
+    public async Task InitializeAsync()
     {
-        Factory = dbFixture.Factory;
+        Factory = MySetUpFixture.Factory;
         Scope = Factory.Services.CreateScope();
         DbContext = Scope.GetService<AppDbContext>();
         Client = Factory.CreateClient();
-    }
-
-    public async Task InitializeAsync()
-    {
         _transaction = await DbContext.Database.BeginTransactionAsync();
     }
 
+    [TearDown]
     public async Task DisposeAsync()
     {
+        await _transaction.RollbackAsync();
         await _transaction.DisposeAsync();
+        await DbContext.DisposeAsync();
         Client.Dispose();
-        DbContext.Dispose();
         Scope.Dispose();
     }
 }

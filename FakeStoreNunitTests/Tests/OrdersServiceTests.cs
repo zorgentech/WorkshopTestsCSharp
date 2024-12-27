@@ -2,7 +2,8 @@ using FakeStore.Model.Domain;
 using FakeStore.Model.Enums;
 using FakeStore.Repositories;
 using FakeStore.Services;
-using FakeStoreNunitTests.Fixtures;
+using FakeStoreNunitTests;
+using FakeStoreNunitTests.Utils;
 using FluentAssertions;
 using Moq;
 

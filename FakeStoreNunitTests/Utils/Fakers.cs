@@ -1,7 +1,7 @@
 using AutoBogus;
 using FakeStore.Model.Domain;
 
-namespace FakeStoreXunitTests.Fixtures;
+namespace FakeStoreNunitTests.Utils;
 
 public class Fakers
 {

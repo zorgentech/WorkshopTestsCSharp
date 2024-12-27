@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Api.XUnit.Tests.Extensions;
+namespace FakeStoreNunitTests.Extensions;
 
 public static class ServiceScopeExtensions
 {
