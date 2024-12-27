@@ -142,11 +142,8 @@ public class OrdersServiceTestsNoMock : TestBase
         var attendant2 = Fakers.attendant.Generate();
         var attendant3 = Fakers.attendant.Generate();
         var attendants = new List<Attendant> { attendant1, attendant2, attendant3 };
-        attendants.ForEach(async a =>
-        {
-            await DbContext.Attendants.AddAsync(a);
-            await DbContext.SaveChangesAsync();
-        });
+        await DbContext.AddRangeAsync(attendants);
+        await DbContext.SaveChangesAsync();
         await CreateOrdersForAttendantAndStore(attendant1, attendant1OrdersQuantity);
         await CreateOrdersForAttendantAndStore(attendant2, attendant2OrdersQuantity);
         await CreateOrdersForAttendantAndStore(attendant3, attendant3OrdersQuantity);
@@ -171,9 +168,7 @@ public class OrdersServiceTestsNoMock : TestBase
         var attendant1 = Fakers.attendant.Generate();
         var attendant2 = Fakers.attendant.Generate();
         var attendant3 = Fakers.attendant.Generate();
-        await DbContext.AddAsync(attendant1);
-        await DbContext.AddAsync(attendant2);
-        await DbContext.AddAsync(attendant3);
+        await DbContext.AddRangeAsync(attendant1, attendant2, attendant3);
         await DbContext.SaveChangesAsync();
         var attendantService = Scope.GetService<IAttendantService>();
 
