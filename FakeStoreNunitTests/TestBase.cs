@@ -19,7 +19,7 @@ public class TestBase
     [SetUp]
     public async Task InitializeAsync()
     {
-        Factory = MySetUpFixture.Factory;
+        Factory = DbFixture.Factory;
         Scope = Factory.Services.CreateScope();
         DbContext = Scope.GetService<AppDbContext>();
         Client = Factory.CreateClient();
@@ -29,7 +29,6 @@ public class TestBase
     [TearDown]
     public async Task DisposeAsync()
     {
-        await _transaction.RollbackAsync();
         await _transaction.DisposeAsync();
         await DbContext.DisposeAsync();
         Client.Dispose();

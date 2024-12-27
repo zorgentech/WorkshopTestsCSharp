@@ -6,11 +6,11 @@ using Microsoft.Extensions.DependencyInjection;
 namespace FakeStoreNunitTests;
 
 [SetUpFixture]
-public class MySetUpFixture
+public class DbFixture
 {
     public static CustomWebApplicationFactory<Program> Factory = new();
 
-    public MySetUpFixture()
+    public DbFixture()
     {
         using var scope = Factory.Services.CreateScope();
         var db = scope.GetService<AppDbContext>();
