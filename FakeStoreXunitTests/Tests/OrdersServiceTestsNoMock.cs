@@ -145,16 +145,12 @@ public class OrdersServiceTestsNoMock : TestBase
             await DbContext.SaveChangesAsync();
 
             // Assert
-            var attendantWithLeastOrders = await DbContext
+            var attendantOrdersCountQuery = DbContext
                 .Attendants.Include(x => x.Orders)
-                .Select(x => new { x.Id, OrdersCount = x.Orders!.Count })
-                .OrderBy(x => x.OrdersCount)
-                .FirstAsync();
-            var attendantWithMoreOrders = await DbContext
-                .Attendants.Include(x => x.Orders)
-                .Select(x => new { x.Id, OrdersCount = x.Orders!.Count })
-                .OrderBy(x => x.OrdersCount)
-                .LastAsync();
+                .Select(x => new { OrdersCount = x.Orders!.Count })
+                .OrderBy(x => x.OrdersCount);
+            var attendantWithLeastOrders = await attendantOrdersCountQuery.FirstAsync();
+            var attendantWithMoreOrders = await attendantOrdersCountQuery.LastAsync();
             var ordersCountDifference =
                 attendantWithMoreOrders.OrdersCount - attendantWithLeastOrders.OrdersCount;
             ordersCountDifference
