@@ -39,7 +39,7 @@ public static class SharedSetUps
 /// Contém tudo o que é necessário para os testes de integração
 /// também é responsável pela limpeza do banco depois de cada teste
 /// </summary>
-public class TestBase : IAsyncLifetime
+public abstract class TestBase : IAsyncLifetime
 {
     private IDbContextTransaction _transaction;
     public CustomApplicationFactory<Program> Factory;
