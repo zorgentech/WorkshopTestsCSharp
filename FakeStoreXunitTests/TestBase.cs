@@ -1,6 +1,7 @@
 using FakeStore.Data;
 using FakeStoreXunitTests.Extensions;
 using FakeStoreXunitTests.Factories;
+using FakeStoreXunitTests.Utils;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -29,6 +30,7 @@ public class TestBaseSetUp
 public static class SharedSetUps
 {
     public static readonly TestBaseSetUp TestBaseSetUp = new();
+    public static readonly Fakers Fakers = new();
 }
 
 /// <summary>
@@ -38,14 +40,14 @@ public static class SharedSetUps
 public abstract class TestBase : IAsyncLifetime
 {
     private IDbContextTransaction _transaction;
-    public CustomApplicationFactory<Program> Factory;
+    public CustomApplicationFactory<Program> Factory = SharedSetUps.TestBaseSetUp.Factory;
+    public Fakers Fakers = SharedSetUps.Fakers;
     public IServiceScope Scope;
     public AppDbContext DbContext;
     public HttpClient Client;
 
     public TestBase()
     {
-        Factory = SharedSetUps.TestBaseSetUp.Factory;
         Scope = Factory.Services.CreateAsyncScope();
         Client = Factory.CreateClient();
         DbContext = Scope.GetService<AppDbContext>();
