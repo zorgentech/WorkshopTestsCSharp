@@ -17,11 +17,7 @@ public class TestBaseSetUp
     {
         using var scope = Factory.Services.CreateScope();
         using var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        try
-        {
-            dbContext.Database.EnsureDeleted();
-        }
-        catch { }
+        dbContext.Database.EnsureDeleted();
         // se estivermos usando migrations, chamar dbContext.Database.Migrate pois o coverage pega as migrations
         dbContext.Database.EnsureCreated();
     }

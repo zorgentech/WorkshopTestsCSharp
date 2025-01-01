@@ -42,21 +42,7 @@ public class TestBase
 
     private void CreateDatabase()
     {
-        try
-        {
-            DbContext.Database.EnsureDeleted();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-        }
-        try
-        {
-            DbContext.Database.EnsureCreated();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-        }
+        DbContext.Database.EnsureDeleted();
+        DbContext.Database.EnsureCreated();
     }
 }
