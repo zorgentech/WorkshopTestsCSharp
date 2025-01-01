@@ -1,4 +1,3 @@
-using FakeStore.Model.Domain;
 using FakeStore.Model.Enums;
 using FakeStore.Services;
 using FakeStoreXunitTests.Extensions;
