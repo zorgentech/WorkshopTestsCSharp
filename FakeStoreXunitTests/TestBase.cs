@@ -27,8 +27,9 @@ public class TestBaseSetUp
 /// <summary>
 /// Serve como storage para que as classes de setup iniciem somente uma vez
 /// </summary>
-public static class SharedSetUps
+public class SharedSetUps
 {
+    // TODO: explicar porque não usar com IClassFixture na classe base de teste
     public static readonly TestBaseSetUp TestBaseSetUp = new();
     public static readonly Fakers Fakers = new();
 }
