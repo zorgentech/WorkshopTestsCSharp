@@ -27,14 +27,14 @@ public class OrdersServiceTests
     [InlineData(60, -1, false)]
     [InlineData(60, -10, false)]
     public void IsOrderExpired(
-        int OrderCancelationLimitInMinutes,
+        int orderCancelationLimitInMinutes,
         int minutesOffset,
         bool expectedResult
     )
     {
         // Arrange
         var order = fakers.order.Generate();
-        order.Store.OrderCancelationLimitInMinutes = OrderCancelationLimitInMinutes;
+        order.Store.OrderCancelationLimitInMinutes = orderCancelationLimitInMinutes;
         order.CreatedAt = DateTime.UtcNow.AddMinutes(
             order.Store.OrderCancelationLimitInMinutes + minutesOffset
         );
