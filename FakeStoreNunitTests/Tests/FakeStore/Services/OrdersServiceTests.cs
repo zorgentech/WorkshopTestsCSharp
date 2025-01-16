@@ -21,7 +21,6 @@ public class OrdersServiceTests
         ordersService = new Mock<OrdersService>(ordersRepositoryMock.Object);
     }
 
-    [Test]
     [TestCase(60, 0, true)]
     [TestCase(60, 1, true)]
     [TestCase(60, 10, true)]
