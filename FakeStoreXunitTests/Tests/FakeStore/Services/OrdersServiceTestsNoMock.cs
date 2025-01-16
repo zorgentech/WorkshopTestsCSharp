@@ -5,7 +5,7 @@ using FakeStoreXunitTests.Utils;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 
-namespace FakeStoreXunitTests.Tests;
+namespace FakeStoreXunitTests.Tests.FakeStore.Services;
 
 public class OrdersServiceTestsNoMock : TestBase
 {

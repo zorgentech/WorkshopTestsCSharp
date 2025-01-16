@@ -1,4 +1,3 @@
-using FakeStore.Model.Domain;
 using FakeStore.Model.Enums;
 using FakeStore.Services;
 using FakeStoreNunitTests.Extensions;
@@ -6,7 +5,7 @@ using FakeStoreNunitTests.Utils;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 
-namespace FakeStoreNunitTests.Tests;
+namespace FakeStoreNunitTests.Tests.FakeStore.Services;
 
 public class OrdersServiceTestsNoMock : TestBase
 {
