@@ -14,7 +14,7 @@ namespace FakeStoreXunitTests;
 public abstract class TestBase : IAsyncLifetime
 {
     private IDbContextTransaction _transaction;
-    public static readonly CustomApplicationFactory<Program> Factory = new();
+    public static readonly CustomApplicationFactory Factory = new();
     public static readonly Fakers Fakers = new();
     public readonly IServiceScope Scope;
     public readonly AppDbContext DbContext;

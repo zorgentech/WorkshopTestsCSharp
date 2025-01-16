@@ -11,7 +11,7 @@ public class TestBase
 {
     private static bool _databaseCreated = false;
     private IDbContextTransaction _transaction;
-    public static readonly CustomWebApplicationFactory<Program> Factory = new();
+    public static readonly CustomWebApplicationFactory Factory = new();
     public IServiceScope Scope;
     public AppDbContext DbContext;
     public HttpClient Client;

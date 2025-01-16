@@ -6,8 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FakeStoreXunitTests.Factories;
 
-public class CustomApplicationFactory<TProgram> : WebApplicationFactory<TProgram>
-    where TProgram : class
+public class CustomApplicationFactory : WebApplicationFactory<Program>
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
