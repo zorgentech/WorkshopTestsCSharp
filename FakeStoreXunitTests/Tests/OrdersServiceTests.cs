@@ -20,6 +20,37 @@ public class OrdersServiceTests
         ordersService = new Mock<OrdersService>(ordersRepositoryMock.Object);
     }
 
+    [Theory]
+    [InlineData(60, 0, true)]
+    [InlineData(60, 1, true)]
+    [InlineData(60, 10, true)]
+    [InlineData(60, -1, false)]
+    [InlineData(60, -10, false)]
+    public void IsOrderExpired(
+        int OrderCancelationLimitInMinutes,
+        int minutesOffset,
+        bool expectedResult
+    )
+    {
+        // Arrange
+        var order = fakers.order.Generate();
+        order.Store.OrderCancelationLimitInMinutes = OrderCancelationLimitInMinutes;
+        order.CreatedAt = DateTime.UtcNow.AddMinutes(
+            order.Store.OrderCancelationLimitInMinutes + minutesOffset
+        );
+
+        // Act
+        var result = ordersService.Object.IsOrderExpired(order);
+
+        // Assert
+        result
+            .Should()
+            .Be(
+                expectedResult,
+                $"order created at {order.CreatedAt} with offset {minutesOffset} minutes should be {(expectedResult ? "expired" : "not expired")} "
+            );
+    }
+
     [Fact]
     public void IsOrderExpired_WhenOrderIsExpired_ShouldReturnTrue()
     {

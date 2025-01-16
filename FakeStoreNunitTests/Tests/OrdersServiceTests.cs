@@ -23,6 +23,37 @@ public class OrdersServiceTests
     }
 
     [Test]
+    [TestCase(60, 0, true)]
+    [TestCase(60, 1, true)]
+    [TestCase(60, 10, true)]
+    [TestCase(60, -1, false)]
+    [TestCase(60, -10, false)]
+    public void IsOrderExpired(
+        int OrderCancelationLimitInMinutes,
+        int minutesOffset,
+        bool expectedResult
+    )
+    {
+        // Arrange
+        var order = fakers.order.Generate();
+        order.Store.OrderCancelationLimitInMinutes = OrderCancelationLimitInMinutes;
+        order.CreatedAt = DateTime.UtcNow.AddMinutes(
+            order.Store.OrderCancelationLimitInMinutes + minutesOffset
+        );
+
+        // Act
+        var result = ordersService.Object.IsOrderExpired(order);
+
+        // Assert
+        result
+            .Should()
+            .Be(
+                expectedResult,
+                $"order created at {order.CreatedAt} with offset {minutesOffset} minutes should be {(expectedResult ? "expired" : "not expired")} "
+            );
+    }
+
+    [Test]
     public void IsOrderExpired_ShouldReturnTrue_WhenOrderIsExpired()
     {
         // Arrange
@@ -33,7 +64,7 @@ public class OrdersServiceTests
         );
 
         // Act
-        var result = ordersService.Object.IsOrderExpired((Order)order);
+        var result = ordersService.Object.IsOrderExpired(order);
 
         // Assert
         result
