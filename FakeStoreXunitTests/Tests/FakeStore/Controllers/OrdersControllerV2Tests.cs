@@ -1,4 +1,3 @@
-using System;
 using FakeStore.Controllers;
 using FakeStore.Model.Domain;
 using FakeStore.Services;
