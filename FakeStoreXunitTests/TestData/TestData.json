@@ -1,0 +1,8 @@
+[
+    { "CancelationLimit": 60, "Offset": 0, "Expected": true},
+    { "CancelationLimit": 60, "Offset": 1, "Expected": true},
+    { "CancelationLimit": 60, "Offset": -1, "Expected": false},
+    { "CancelationLimit": 60, "Offset": 10, "Expected": true},
+    { "CancelationLimit": 60, "Offset": -10, "Expected": false}
+]
+  

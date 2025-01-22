@@ -13,6 +13,16 @@ public class OrdersServiceTests
     public Mock<IOrdersRepository> ordersRepositoryMock;
     public Mock<OrdersService> ordersService;
     public Fakers fakers = new();
+    public static readonly IEnumerable<object[]> TestCases = TestDataProvider.GetTestData<TestData>(
+        "TestData/TestData.json"
+    );
+
+    public class TestData
+    {
+        public int CancelationLimit { get; set; }
+        public int OffSet { get; set; }
+        public bool Expected { get; set; }
+    }
 
     public OrdersServiceTests()
     {
@@ -26,7 +36,7 @@ public class OrdersServiceTests
     [InlineData(60, 10, true)]
     [InlineData(60, -1, false)]
     [InlineData(60, -10, false)]
-    public void IsOrderExpired(
+    public void IsOrderExpiredInlineTestCase(
         int orderCancelationLimitInMinutes,
         int minutesOffset,
         bool expectedResult
@@ -48,6 +58,29 @@ public class OrdersServiceTests
             .Be(
                 expectedResult,
                 $"order created at {order.CreatedAt} with offset {minutesOffset} minutes should be {(expectedResult ? "expired" : "not expired")} "
+            );
+    }
+
+    [Theory]
+    [MemberData(nameof(TestCases))]
+    public void IsOrderExpiredMemberDataTestCase(TestData testData)
+    {
+        // Arrange
+        var order = fakers.order.Generate();
+        order.Store.OrderCancelationLimitInMinutes = testData.CancelationLimit;
+        order.CreatedAt = DateTime.UtcNow.AddMinutes(
+            order.Store.OrderCancelationLimitInMinutes + testData.OffSet
+        );
+
+        // Act
+        var result = ordersService.Object.IsOrderExpired(order);
+
+        // Assert
+        result
+            .Should()
+            .Be(
+                testData.Expected,
+                $"order created at {order.CreatedAt} with offset {testData.OffSet} minutes should be {(testData.Expected ? "expired" : "not expired")} "
             );
     }
 

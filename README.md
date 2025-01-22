@@ -12,7 +12,7 @@ Desenvolvendo um teste unitário para garantir o comportamento esperado do méto
 
 ### Cenário:
 
-Um pedido é realizado no restaurante que possui uma política de permitir alterações no pedido até 1 hora após a realização do mesmo, para casos em que algum produto esteja em falta;
+Um pedido é realizado no loja que possui uma política de permitir alterações no pedido até 1 hora após a realização do mesmo, para casos em que algum produto esteja em falta;
 
 O pedido é recebido às 17:00.
 
@@ -54,3 +54,5 @@ Verificar se cada atendente recebeu igualmente os pedidos.
 Uma atualização exige novos campos nos pedidos, porém a API de novos pedidos precisa ser funcionando para não prejudicar o setor do Marketing Digital.
 
 Adicione os novos campos e garante que a API vai seguir funcionando.
+
+
