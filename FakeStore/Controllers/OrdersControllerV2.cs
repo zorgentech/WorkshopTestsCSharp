@@ -8,7 +8,7 @@ namespace FakeStore.Controllers;
 [ApiController]
 public class OrdersControllerV2(IOrdersService service) : ControllerBase
 {
-    public async Task<IActionResult> CancelOrder(Guid orderId)
+    public async Task<IActionResult> CancelOrderAsync(Guid orderId)
     {
         if (await service.GetOrderByIdAsync(orderId, includeStore: true) is not Order order)
             return NotFound();
