@@ -11,7 +11,7 @@ namespace FakeStoreXunitTests.Tests.FakeStore.Services;
 public class OrdersServiceTests
 {
     public Mock<IOrdersRepository> ordersRepositoryMock;
-    public Mock<OrdersService> ordersService;
+    public OrdersService ordersService;
     public Fakers fakers = new();
     public static readonly IEnumerable<object[]> TestCases = TestDataProvider.GetTestData<TestData>(
         "TestData/TestData.json"
@@ -27,7 +27,7 @@ public class OrdersServiceTests
     public OrdersServiceTests()
     {
         ordersRepositoryMock = new Mock<IOrdersRepository>();
-        ordersService = new Mock<OrdersService>(ordersRepositoryMock.Object);
+        ordersService = new OrdersService(ordersRepositoryMock.Object);
     }
 
     [Theory]
@@ -50,7 +50,7 @@ public class OrdersServiceTests
         );
 
         // Act
-        var result = ordersService.Object.IsOrderExpired(order);
+        var result = ordersService.IsOrderExpired(order);
 
         // Assert
         result
@@ -73,7 +73,7 @@ public class OrdersServiceTests
         );
 
         // Act
-        var result = ordersService.Object.IsOrderExpired(order);
+        var result = ordersService.IsOrderExpired(order);
 
         // Assert
         result
@@ -95,7 +95,7 @@ public class OrdersServiceTests
         );
 
         // Act
-        var result = ordersService.Object.IsOrderExpired(order);
+        var result = ordersService.IsOrderExpired(order);
 
         // Assert
         result
@@ -117,7 +117,7 @@ public class OrdersServiceTests
         );
 
         // Act
-        var result = ordersService.Object.IsOrderExpired(order);
+        var result = ordersService.IsOrderExpired(order);
 
         // Assert
         result
@@ -137,7 +137,7 @@ public class OrdersServiceTests
         order.CreatedAt = DateTime.UtcNow.AddMinutes(order.Store.OrderCancelationLimitInMinutes);
 
         // Act
-        var result = ordersService.Object.IsOrderExpired(order);
+        var result = ordersService.IsOrderExpired(order);
 
         // Assert
         result
@@ -159,7 +159,7 @@ public class OrdersServiceTests
         );
 
         // Act
-        var result = await ordersService.Object.CancelOrderAsync(order);
+        var result = await ordersService.CancelOrderAsync(order);
 
         // Assert
         result
@@ -178,7 +178,7 @@ public class OrdersServiceTests
         );
 
         // Act
-        var result = await ordersService.Object.CancelOrderAsync(order);
+        var result = await ordersService.CancelOrderAsync(order);
 
         // Assert
         ordersRepositoryMock.Verify(
