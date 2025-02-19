@@ -45,8 +45,8 @@ public class OrdersServiceTests
         // Arrange
         var order = fakers.order.Generate();
         order.Store.OrderCancelationLimitInMinutes = orderCancelationLimitInMinutes;
-        order.CreatedAt = DateTime.UtcNow.AddMinutes(
-            order.Store.OrderCancelationLimitInMinutes + minutesOffset
+        order.CreatedAt = DateTime.Now.AddMinutes(
+            -order.Store.OrderCancelationLimitInMinutes - minutesOffset
         );
 
         // Act
@@ -68,8 +68,8 @@ public class OrdersServiceTests
         // Arrange
         var order = fakers.order.Generate();
         order.Store.OrderCancelationLimitInMinutes = testData.CancelationLimit;
-        order.CreatedAt = DateTime.UtcNow.AddMinutes(
-            order.Store.OrderCancelationLimitInMinutes + testData.OffSet
+        order.CreatedAt = DateTime.Now.AddMinutes(
+            -order.Store.OrderCancelationLimitInMinutes - testData.OffSet
         );
 
         // Act
@@ -90,9 +90,7 @@ public class OrdersServiceTests
         // Arrange
         var order = fakers.order.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
-        order.CreatedAt = DateTime.UtcNow.AddMinutes(
-            order.Store.OrderCancelationLimitInMinutes + 1
-        );
+        order.CreatedAt = DateTime.Now.AddMinutes(-order.Store.OrderCancelationLimitInMinutes - 1);
 
         // Act
         var result = ordersService.IsOrderExpired(order);
@@ -134,7 +132,7 @@ public class OrdersServiceTests
         // Arrange
         var order = fakers.order.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
-        order.CreatedAt = DateTime.UtcNow.AddMinutes(order.Store.OrderCancelationLimitInMinutes);
+        order.CreatedAt = DateTime.Now.AddMinutes(-order.Store.OrderCancelationLimitInMinutes);
 
         // Act
         var result = ordersService.IsOrderExpired(order);
@@ -154,9 +152,7 @@ public class OrdersServiceTests
         // Arrange
         var order = fakers.order.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
-        order.CreatedAt = DateTime.UtcNow.AddMinutes(
-            order.Store.OrderCancelationLimitInMinutes + 1
-        );
+        order.CreatedAt = DateTime.Now.AddMinutes(-order.Store.OrderCancelationLimitInMinutes - 1);
 
         // Act
         var result = await ordersService.CancelOrderAsync(order);

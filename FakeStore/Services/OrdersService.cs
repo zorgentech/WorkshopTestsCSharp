@@ -13,10 +13,9 @@ public class OrdersService(IOrdersRepository ordersRepository) : IOrdersService
 
     public bool IsOrderExpired(Order order)
     {
-        var now = DateTime.UtcNow;
-
-        return Convert.ToInt64(order.CreatedAt.Subtract(now).TotalMinutes)
-            >= order.Store.OrderCancelationLimitInMinutes;
+        var now = DateTime.Now;
+        var diff = Convert.ToInt64(now.Subtract(order.CreatedAt).TotalMinutes);
+        return diff >= order.Store.OrderCancelationLimitInMinutes;
     }
 
     public async Task UpdateOrderAsync(Order order)

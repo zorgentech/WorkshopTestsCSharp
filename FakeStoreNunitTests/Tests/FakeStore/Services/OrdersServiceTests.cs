@@ -35,8 +35,8 @@ public class OrdersServiceTests
         // Arrange
         var order = fakers.order.Generate();
         order.Store.OrderCancelationLimitInMinutes = OrderCancelationLimitInMinutes;
-        order.CreatedAt = DateTime.UtcNow.AddMinutes(
-            order.Store.OrderCancelationLimitInMinutes + minutesOffset
+        order.CreatedAt = DateTime.Now.AddMinutes(
+            -order.Store.OrderCancelationLimitInMinutes - minutesOffset
         );
 
         // Act
@@ -57,9 +57,7 @@ public class OrdersServiceTests
         // Arrange
         var order = fakers.order.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
-        order.CreatedAt = DateTime.UtcNow.AddMinutes(
-            order.Store.OrderCancelationLimitInMinutes + 1
-        );
+        order.CreatedAt = DateTime.Now.AddMinutes(-order.Store.OrderCancelationLimitInMinutes - 1);
 
         // Act
         var result = ordersService.Object.IsOrderExpired(order);
@@ -101,7 +99,7 @@ public class OrdersServiceTests
         // Arrange
         var order = fakers.order.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
-        order.CreatedAt = DateTime.UtcNow.AddMinutes(order.Store.OrderCancelationLimitInMinutes);
+        order.CreatedAt = DateTime.Now.AddMinutes(-order.Store.OrderCancelationLimitInMinutes);
 
         // Act
         var result = ordersService.Object.IsOrderExpired((Order)order);
@@ -121,8 +119,8 @@ public class OrdersServiceTests
         // Arrange
         var order = fakers.order.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
-        order.CreatedAt = DateTime.UtcNow.AddMinutes(
-            order.Store.OrderCancelationLimitInMinutes + 1
+        order.CreatedAt = DateTime.Now.AddMinutes(
+            -order.Store.OrderCancelationLimitInMinutes - 1
         );
 
         // Act

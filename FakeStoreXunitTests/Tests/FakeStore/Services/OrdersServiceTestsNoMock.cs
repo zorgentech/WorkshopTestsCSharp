@@ -17,9 +17,7 @@ public class OrdersServiceTestsNoMock : TestBase
         // Arrange
         var order = Fakers.order.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
-        order.CreatedAt = DateTime.UtcNow.AddMinutes(
-            order.Store.OrderCancelationLimitInMinutes + 1
-        );
+        order.CreatedAt = DateTime.Now.AddMinutes(-order.Store.OrderCancelationLimitInMinutes - 1);
 
         // Act
         var result = OrdersService.IsOrderExpired(order);
@@ -61,7 +59,7 @@ public class OrdersServiceTestsNoMock : TestBase
         // Arrange
         var order = Fakers.order.Generate();
         order.Store.OrderCancelationLimitInMinutes = 60;
-        order.CreatedAt = DateTime.UtcNow.AddMinutes(order.Store.OrderCancelationLimitInMinutes);
+        order.CreatedAt = DateTime.Now.AddMinutes(-order.Store.OrderCancelationLimitInMinutes);
 
         // Act
         var result = OrdersService.IsOrderExpired(order);
@@ -82,9 +80,7 @@ public class OrdersServiceTestsNoMock : TestBase
         var order = Fakers.order.Generate();
         order.Status = OrderStatus.Pending;
         order.Store.OrderCancelationLimitInMinutes = 60;
-        order.CreatedAt = DateTime.UtcNow.AddMinutes(
-            order.Store.OrderCancelationLimitInMinutes + 1
-        );
+        order.CreatedAt = DateTime.Now.AddMinutes(-order.Store.OrderCancelationLimitInMinutes - 1);
         await DbContext.Orders.AddAsync(order);
         await DbContext.SaveChangesAsync();
 
