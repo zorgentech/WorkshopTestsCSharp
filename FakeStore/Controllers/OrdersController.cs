@@ -14,7 +14,7 @@ public class OrdersController(AppDbContext dbContext) : ControllerBase
         if (await dbContext.Orders.FindAsync(orderId) is not Order order)
             return NotFound();
 
-        var now = DateTime.UtcNow;
+        var now = DateTime.Now;
 
         if (now.Subtract(order.CreatedAt).TotalMinutes < order.Store.OrderCancelationLimitInMinutes)
         {
